@@ -3,17 +3,17 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 
-entity mul2 is 
+entity mul3 is 
 port(
 	x: in std_logic_vector(7 downto 0);
 	y: out std_logic_vector(7 downto 0)
 ); 
-end mul2;
+end mul3;
 
-architecture mul2behavior of mul2 is
+architecture mul3behavior of mul3 is
     subtype BYTE is std_logic_vector(7 downto 0);
     type LUT is array (0 to 255) of BYTE;
-    constant mul2lut: LUT := (
+    constant mul3lut: LUT := (
 "00000000","00000011","00000110","00000101","00001100","00001111","00001010","00001001",
 "00011000","00011011","00011110","00011101","00010100","00010111","00010010","00010001",
 "00110000","00110011","00110110","00110101","00111100","00111111","00111010","00111001",
@@ -48,6 +48,6 @@ architecture mul2behavior of mul2 is
 "00010011","00010000","00010101","00010110","00011111","00011100","00011001","00011010"
 );
 begin
-	y <= mul2lut(TO_INTEGER(unsigned(x)));
+	y <= mul3lut(TO_INTEGER(unsigned(x)));
 end;
 
