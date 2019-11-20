@@ -45,8 +45,8 @@ begin
     --BusToBytes1 : BusToBytes port map(in_state => RoundKey_bus, out_state => RoundKey);
 
 
-    --SubBytes0 : SubBytes port map(in_state => in_state, out_state => state0);
-    --ShiftRows0 : ShiftRows port map(in_state => state0, out_state => state1);
-    MixColumns0 : MixColumns port map(in_state => in_state, out_state => out_state);
-    --AddRoundKey0 : AddRoundKey port map(in_state => state2, RoundKey => RoundKey, out_state => out_state);
+    SubBytes0 : SubBytes port map(in_state => in_state, out_state => state0);
+    ShiftRows0 : ShiftRows port map(in_state => state0, out_state => state1);
+    MixColumns0 : MixColumns port map(in_state => state1, out_state => state2);
+    AddRoundKey0 : AddRoundKey port map(in_state => state2, RoundKey => RoundKey, out_state => out_state);
 end;
