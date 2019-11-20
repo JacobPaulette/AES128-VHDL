@@ -25,7 +25,7 @@ architecture behavior of MixColumn is
 
     component mul3 port(
         x : in std_logic_vector(7 downto 0);
-        y : in std_logic_vector(7 downto 0));
+        y : out std_logic_vector(7 downto 0));
     end component;
 begin
     mul2_0_inst : mul2 port map(x => x(0), y => mul2_0);
@@ -33,10 +33,10 @@ begin
     mul2_2_inst : mul2 port map(x => x(2), y => mul2_2);
     mul2_3_inst : mul2 port map(x => x(3), y => mul2_3);
 
-    mul3_0_inst : mul2 port map(x => x(0), y => mul3_0);
-    mul3_1_inst : mul2 port map(x => x(1), y => mul3_1);
-    mul3_2_inst : mul2 port map(x => x(2), y => mul3_2);
-    mul3_3_inst : mul2 port map(x => x(3), y => mul3_3);
+    mul3_0_inst : mul3 port map(x => x(0), y => mul3_0);
+    mul3_1_inst : mul3 port map(x => x(1), y => mul3_1);
+    mul3_2_inst : mul3 port map(x => x(2), y => mul3_2);
+    mul3_3_inst : mul3 port map(x => x(3), y => mul3_3);
 
     y(0) <= mul2_0 xor mul3_1 xor x(2) xor x(3);
     y(1) <= x(0) xor mul2_1 xor mul3_2 xor x(3);
