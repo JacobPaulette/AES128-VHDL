@@ -28,12 +28,21 @@ architecture behavior of tb_Cipher is
         out_state : out state_byte);
     end component;
 
+    component BytesToBus is port(
+        in_bytes : in state_byte;
+        out_bus : out std_logic_vector(127 downto 0));
+    end component;
 
-
+    component ToStateColumn is port(
+        in_state : in state_byte;
+        out_state : out state);
+    end component;
 
 
     signal plaintext : std_logic_vector(127 downto 0);
     signal ciphertext : std_logic_vector(127 downto 0);
+
+    signal plaintext_bytes : state_byte;
 
     signal plaintext_state : state;
     signal ciphertext_state : state;
@@ -57,6 +66,12 @@ begin
     BusToBytes9 : BusToBytes port map(x"2B7E151628AED2A6ABF7158809CF4F3C", RoundKeys(9));
     BusToBytes10 : BusToBytes port map(x"2B7E151628AED2A6ABF7158809CF4F3C", RoundKeys(10));
     BusToBytes11 : BusToBytes port map(x"2B7E151628AED2A6ABF7158809CF4F3C", RoundKeys(10));
+
+
+    --Convert plaintext to state format
+
+    BusToBytes12 : BusToBytes port map(plaintext, plaintext_bytes);
+    ToStateColumn0 : ToStateColumn port map(plaintext_bytes, plaintext_state);
     
     --Now do Cipher
 
@@ -64,10 +79,7 @@ begin
     
     --Convert Cipher output to ciphertext
     ToStateByte0 : ToStateByte port map(ciphertext_state, ciphertext_bytes);
-    
-    
-
-    
+    BytesToBus0 : BytesToBus port map(ciphertext_bytes, ciphertext); 
 end;
 
 
