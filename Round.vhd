@@ -39,12 +39,6 @@ architecture behavior of Round is
     end component;
 
 begin
-    --conversions to other datatypes
-    --BusToBytes0 : BusToBytes port map(in_state => in_state_bus, out_state => in_state_bytes);
-    --ToStateColumn0 : ToStateColumn port map(in_state => in_state_bytes, out_state => in_state);
-    --BusToBytes1 : BusToBytes port map(in_state => RoundKey_bus, out_state => RoundKey);
-
-
     SubBytes0 : SubBytes port map(in_state => in_state, out_state => state0);
     ShiftRows0 : ShiftRows port map(in_state => state0, out_state => state1);
     MixColumns0 : MixColumns port map(in_state => state1, out_state => state2);
