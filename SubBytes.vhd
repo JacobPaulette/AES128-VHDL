@@ -1,6 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.Common.all;
+--use work.Common.all;
+
+library xil_defaultlib;
+use xil_defaultlib.Common.all;
 
 entity SubBytes is port(
     in_state : in state;

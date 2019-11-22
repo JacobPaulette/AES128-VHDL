@@ -1,7 +1,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.Common.all;
+--use work.Common.all;
+
+library xil_defaultlib;
+use xil_defaultlib.Common.all;
 
 
 
@@ -57,16 +60,16 @@ begin
     Round1 : Round port map(state1, RoundKeys(2), state2);
     Round2 : Round port map(state2, RoundKeys(3), state3);
     Round3 : Round port map(state3, RoundKeys(4), state4);
-    Round4 : Round port map(state4, RoundKeys(6), state5);
-    Round5 : Round port map(state5, RoundKeys(7), state6);
-    Round6 : Round port map(state6, RoundKeys(8), state7);
-    Round7 : Round port map(state7, RoundKeys(9), state8);
-    Round8 : Round port map(state8, RoundKeys(10), state9);
+    Round4 : Round port map(state4, RoundKeys(5), state5);
+    Round5 : Round port map(state5, RoundKeys(6), state6);
+    Round6 : Round port map(state6, RoundKeys(7), state7);
+    Round7 : Round port map(state7, RoundKeys(8), state8);
+    Round8 : Round port map(state8, RoundKeys(9), state9);
 
     --Final SubBytes, SHiftRows, and RoundKey
     SubBytes0 : SubBytes port map(state9, state10);
     ShiftRows0 : ShiftRows port map(state10, state11);
-    FinalAddRoundKey : AddRoundKey port map(state11, RoundKeys(11), out_state);
+    FinalAddRoundKey : AddRoundKey port map(state11, RoundKeys(10), out_state);
 end;
 
 

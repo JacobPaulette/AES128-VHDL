@@ -1,6 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.Common.all;
+--use work.Common.all;
+
+library xil_defaultlib;
+use xil_defaultlib.Common.all;
 
 entity MixColumn is port(
     x : in column;
