@@ -39,6 +39,19 @@ architecture behavior of tb_Cipher is
         in_state : in state_byte;
         out_state : out state);
     end component;
+    
+    component Selective16to128Register is port(
+        FullInput : in std_logic_vector(127 downto 0);
+        SelectiveInput : in std_logic_vector(15 downto 0);
+        FullOutput : out std_logic_vector(127 downto 0);
+        SelectiveOutput : out std_logic_vector(15 downto 0);
+        Sel : in std_logic_vector(2 downto 0);
+        SInotSO : in std_logic;
+        FBnotS : in std_logic;
+        WE : in std_logic;
+        clock : in std_logic;
+        clear_L : in std_logic);
+    end component;
 
 
     signal plaintext : std_logic_vector(127 downto 0) := x"2B7E151628AED2A6ABF7158809CF4F3C";
@@ -46,13 +59,22 @@ architecture behavior of tb_Cipher is
 
     signal plaintext_bytes : state_byte;
 
-    --signal filler : std_logic_vector(127 downto 0) := x"2B7E151628AED2A6ABF7158809CF4F3C";
+    signal filler : std_logic_vector(127 downto 0) := x"2B7E151628AED2A6ABF7158809CF4F3C";
 
     signal plaintext_state : state;
     signal ciphertext_state : state;
     signal RoundKeys : RoundKeys;
 
     signal ciphertext_bytes : state_byte;
+    
+    signal register_input : std_logic_vector(15 downto 0);
+    signal Sel : std_ulogic_vector(2 downto 0) := "000";
+    signal SI : std_logic := '1';
+    signal FBnotS : std_logic := '0';
+    signal WE : std_logic := '1';
+    signal clock : std_logic := '0';
+    signal clear_L : std_logic := '1';
+    
 
 begin
 
@@ -70,7 +92,16 @@ begin
     BusToBytes10 : BusToBytes port map(x"7e134540fdab28c25fe94b5891d62a98", RoundKeys(10));
 
 
-
+    testreg : Selective16to128Register port map(
+        register_input => SelectiveInput,
+        plaintext => FullOutput,
+        Sel => Sel,
+        SI => SInotSO,
+        FBnotS => FBnotS,
+        WE => WE,
+        clock => clock,
+        clear_L => clear_L);
+        
     
     --Convert plaintext to state format
 
@@ -88,10 +119,6 @@ begin
 
     test_proc: process
     begin
-        wait for 500 ns;
-        plaintext <= x"2B7E151628AED2A6ABF7158809CF4F3D";
-        wait for 500 ns;
-        plaintext <= x"2B7E151628AED2A6ABF7158809CF4F3E";
-        wait for 500 ns;
+        register_input <= filler(127 downto 112);
     end process;
 end;
