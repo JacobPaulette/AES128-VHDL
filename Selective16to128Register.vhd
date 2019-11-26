@@ -65,7 +65,7 @@ begin
         end if;
     end process;
 
-    process(clear_L, FBnotS, SinotSO, Sel, FullInput, SelectiveInput)
+    process(clear_L, FBnotS, SinotSO, Sel, FullInput, SelectiveInput, clock)
     begin
         if clear_L='0' then
             register128_val <= x"00000000000000000000000000000000";
