@@ -40,7 +40,7 @@ architecture behavior of Selective16to128Register is
 
 begin
 
-    process
+    process(FBnotS, SInotSO, Sel, register128_val)
     begin
         if (FBnotS or SInotSO) = '1' then
             FullOutput <= register128_val;
@@ -65,7 +65,7 @@ begin
         end if;
     end process;
 
-    process
+    process(clear_L, FBnotS, SinotSO, Sel, FullInput, SelectiveInput)
     begin
         if clear_L='0' then
             register128_val <= x"00000000000000000000000000000000";
