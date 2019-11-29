@@ -89,16 +89,16 @@ architecture behavior of AES is
     signal ciphertext_bytes : state_byte;
     
     signal register_input : std_logic_vector(15 downto 0);
-    signal count : std_ulogic_vector(2 downto 0);
-    signal InputRegBus : std_logic(127 downto 0);
+    signal count : std_logic_vector(2 downto 0);
+    signal InputRegBus : std_logic_vector(127 downto 0);
 
     --Control variables for registers.
     signal buffer_reg_WE : std_logic := '0';
     signal output_reg_WE : std_logic := '0';
     signal FullBus : std_logic := '1';
     signal SI : std_logic := '1';
+    signal SO : std_logic := '0';
     signal SelectiveBus : std_logic := '0';
-    signal clear_L : std_logic := '1';
 
 
 
@@ -180,16 +180,16 @@ begin
     --Output Reg needs to do the same.
     REG_CTRL: process(clock, count, enable)
     begin
-        if enable then
-            if (rising_edge(clock) and (count = "111")) then
+        if enable = '1' and rising_edge(clock) then
+            if count = "111" then
                 --Ready bufferreg and outputreg to do write on the next falling edge.
                 buffer_reg_WE <= '1';
                 output_reg_WE <= '1';
-            elsif (rising_edge(clock) and (count = "000")) then
+            elsif count = "000" then
                 --Disable WE on bufferreg and outputreg before the next falling edge so 
                 --so block doesn't get corrupted.
                 buffer_reg_WE <= '0';
-                ouput_reg_WE <= '0';
+                output_reg_WE <= '0';
             end if;
         end if;
     end process;

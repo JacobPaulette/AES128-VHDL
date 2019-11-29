@@ -6,6 +6,9 @@ library xil_defaultlib;
 use xil_defaultlib.Common.all;
 
 
+
+--three bit counter that increments on rising edge.
+--asynchronous clear.
 entity Counter3Bit is port(
     clock : in std_logic;
     clear_L : in std_logic;
