@@ -19,7 +19,8 @@ architecture behavior of tb_AES is
         output : out std_logic_vector(15 downto 0);
         clock : in std_logic;
         clear_L : in std_logic;
-        enable : in std_logic);
+        enable : in std_logic;
+        EnotD : in std_logic);
     end component;
 
     signal input : std_logic_vector(15 downto 0);
@@ -27,6 +28,7 @@ architecture behavior of tb_AES is
     signal clock : std_logic := '0';
     signal clear_L : std_logic := '1';
     signal enable : std_logic :='1';
+    signal EnotD : std_logic := '0';
 
     constant half_period : time := 500 ns;
 
@@ -38,26 +40,29 @@ begin
         output => output,
         clock => clock,
         clear_L => clear_L,
-        enable => enable);
+        enable => enable,
+        EnotD => EnotD);
 
     --x"2B7E151628AED2A6ABF7158809CF4F3C";
+
+    --x"861018ef81336a3b21c9ba1f16dccf87";
     process
     begin
-        input <= x"2B7E";
+        input <= x"8610";
         wait for 2*half_period;
-        input <= x"1516";
+        input <= x"18EF";
         wait for 2*half_period;
-        input <= x"28AE";
+        input <= x"8133";
         wait for 2*half_period;
-        input <= x"D2A6";
+        input <= x"6A3B";
         wait for 2*half_period;
-        input <= x"ABF7";
+        input <= x"21C9";
         wait for 2*half_period;
-        input <= x"1588";
+        input <= x"BA1F";
         wait for 2*half_period;
-        input <= x"09CF";
+        input <= x"16DC";
         wait for 2*half_period;
-        input <= x"4F3C";
+        input <= x"CF87";
         wait for 9*half_period;
         wait;
     end process;

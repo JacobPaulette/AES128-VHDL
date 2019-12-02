@@ -13,7 +13,8 @@ entity AES is port(
     output : out std_logic_vector(15 downto 0);
     clock : in std_logic;
     clear_L : in std_logic;
-    enable : in std_logic
+    enable : in std_logic;
+    EnotD : in std_logic --encipher not decipher
 );
 end AES;
 
@@ -24,6 +25,12 @@ architecture behavior of AES is
     --COMPONENT DECLARATIONS
 
     component Cipher is port(
+        in_state : in state;
+        RoundKeys : in RoundKeys;
+        out_state : out state);
+    end component;
+
+    component Decipher is port(
         in_state : in state;
         RoundKeys : in RoundKeys;
         out_state : out state);
@@ -74,19 +81,21 @@ architecture behavior of AES is
     --Inverted clock,
     signal not_clock : std_logic;
 
-    signal plaintext : std_logic_vector(127 downto 0);
-    signal ciphertext : std_logic_vector(127 downto 0);
+    signal inputtext : std_logic_vector(127 downto 0);
+    signal outputtext : std_logic_vector(127 downto 0);
 
-    signal plaintext_bytes : state_byte;
+    signal inputtext_bytes : state_byte;
 
     signal filler : std_logic_vector(127 downto 0) := x"2B7E151628AED2A6ABF7158809CF4F3C";
 
+    --For Cipher and Decipher
     signal plaintext_state : state;
     signal ciphertext_state : state;
     signal RoundKeys : RoundKeys; --RoundKeys are a constant for now, will add
                                 -- Input functionality later.
 
-    signal ciphertext_bytes : state_byte;
+    
+    signal outputtext_bytes : state_byte;
     
     signal register_input : std_logic_vector(15 downto 0);
     signal count : std_logic_vector(2 downto 0);
@@ -148,7 +157,7 @@ begin
             SelectiveInput => filler(15 downto 0),
             SelectiveOutput => filler(15 downto 0),
             FullInput => InputRegBus,
-            FullOutput => plaintext,
+            FullOutput => inputtext,
             Sel => count,
             SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
             FBnotS => FullBus,
@@ -158,7 +167,7 @@ begin
 
 
     outputreg : Selective16to128Register port map(
-        FullInput => ciphertext,
+        FullInput => outputtext,
         SelectiveInput => filler(15 downto 0),
         SelectiveOutput => output,
         Sel => count,
@@ -194,19 +203,31 @@ begin
         end if;
     end process;
 
+    --state gets Ciphered/Deciphered at same time. EnotD chooses which one 
+    -- is the proper output.
+    process(EnotD)
+    begin
+        if EnotD = '1' then
+            outputtext_state <= ciphertext_state;
+        else then
+            outputtext_state <= plaintext_state;
+        end if;
+    end process;
+
 
 
     --Convert plaintext to state format
 
-    BusToBytes12 : BusToBytes port map(plaintext, plaintext_bytes);
-    ToStateColumn0 : ToStateColumn port map(plaintext_bytes, plaintext_state);
+    BusToBytes12 : BusToBytes port map(inputtext, inputtext_bytes);
+    ToStateColumn0 : ToStateColumn port map(inputtext_bytes, inputtext_state);
     
-    --Now do Cipher
+    --Now do Cipher and Decipher
 
-    Cipher0 : Cipher port map(in_state => plaintext_state, RoundKeys => RoundKeys, out_state => ciphertext_state);
+    Cipher0 : Cipher port map(in_state => inputtext_state, RoundKeys => RoundKeys, out_state => ciphertext_state);
     
+    Decipher0 : Decipher port map(in_state => inputtext_state, RoundKeys => RoundKeys, out_state => plaintext_state);
     --Convert Cipher output to ciphertext
-    ToStateByte0 : ToStateByte port map(ciphertext_state, ciphertext_bytes);
-    BytesToBus0 : BytesToBus port map(ciphertext_bytes, ciphertext); 
+    ToStateByte0 : ToStateByte port map(outputtext_state, outputtext_bytes);
+    BytesToBus0 : BytesToBus port map(outputtext_bytes, outputtext); 
 
 end;
