@@ -12,37 +12,69 @@ entity MixColumn is port(
 end MixColumn;
 
 architecture behavior of MixColumn is
-    signal mul2_0 : std_logic_vector(7 downto 0);
-    signal mul2_1 : std_logic_vector(7 downto 0);
-    signal mul2_2 : std_logic_vector(7 downto 0);
-    signal mul2_3 : std_logic_vector(7 downto 0);
-    signal mul3_0 : std_logic_vector(7 downto 0);
-    signal mul3_1 : std_logic_vector(7 downto 0);
-    signal mul3_2 : std_logic_vector(7 downto 0);
-    signal mul3_3 : std_logic_vector(7 downto 0);
- 
-    component mul2 port(
+    signal mul9_0 : std_logic_vector(7 downto 0);
+    signal mul9_1 : std_logic_vector(7 downto 0);
+    signal mul9_2 : std_logic_vector(7 downto 0);
+    signal mul9_3 : std_logic_vector(7 downto 0);
+    signal mul11_0 : std_logic_vector(7 downto 0);
+    signal mul11_1 : std_logic_vector(7 downto 0);
+    signal mul11_2 : std_logic_vector(7 downto 0);
+    signal mul11_3 : std_logic_vector(7 downto 0);
+    signal mul13_0 : std_logic_vector(7 downto 0);
+    signal mul13_1 : std_logic_vector(7 downto 0);
+    signal mul13_2 : std_logic_vector(7 downto 0);
+    signal mul13_3 : std_logic_vector(7 downto 0);
+    signal mul14_0 : std_logic_vector(7 downto 0);
+    signal mul14_1 : std_logic_vector(7 downto 0);
+    signal mul14_2 : std_logic_vector(7 downto 0);
+    signal mul14_3 : std_logic_vector(7 downto 0);
+
+
+    component mul9 port(
         x : in std_logic_vector(7 downto 0);
         y : out std_logic_vector(7 downto 0));
     end component;
 
-    component mul3 port(
+    component mul11 port(
+        x : in std_logic_vector(7 downto 0);
+        y : out std_logic_vector(7 downto 0));
+    end component;
+
+
+    component mul13 port(
+        x : in std_logic_vector(7 downto 0);
+        y : out std_logic_vector(7 downto 0));
+    end component;
+
+    component mul14 port(
         x : in std_logic_vector(7 downto 0);
         y : out std_logic_vector(7 downto 0));
     end component;
 begin
-    mul2_0_inst : mul2 port map(x => x(0), y => mul2_0);
-    mul2_1_inst : mul2 port map(x => x(1), y => mul2_1);
-    mul2_2_inst : mul2 port map(x => x(2), y => mul2_2);
-    mul2_3_inst : mul2 port map(x => x(3), y => mul2_3);
+    mul9_0_inst : mul9 port map(x => x(0), y => mul9_0);
+    mul9_1_inst : mul9 port map(x => x(1), y => mul9_1);
+    mul9_2_inst : mul9 port map(x => x(2), y => mul9_2);
+    mul9_3_inst : mul9 port map(x => x(3), y => mul9_3);
 
-    mul3_0_inst : mul3 port map(x => x(0), y => mul3_0);
-    mul3_1_inst : mul3 port map(x => x(1), y => mul3_1);
-    mul3_2_inst : mul3 port map(x => x(2), y => mul3_2);
-    mul3_3_inst : mul3 port map(x => x(3), y => mul3_3);
+    mul11_0_inst : mul11 port map(x => x(0), y => mul11_0);
+    mul11_1_inst : mul11 port map(x => x(1), y => mul11_1);
+    mul11_2_inst : mul11 port map(x => x(2), y => mul11_2);
+    mul11_3_inst : mul11 port map(x => x(3), y => mul11_3);
 
-    y(0) <= mul2_0 xor mul3_1 xor x(2) xor x(3);
-    y(1) <= x(0) xor mul2_1 xor mul3_2 xor x(3);
-    y(2) <= x(0) xor x(1) xor mul2_2 xor mul3_3;
-    y(3) <= mul3_0 xor x(1) xor x(2) xor mul2_3;
+    mul13_0_inst : mul13 port map(x => x(0), y => mul13_0);
+    mul13_1_inst : mul13 port map(x => x(1), y => mul13_1);
+    mul13_2_inst : mul13 port map(x => x(2), y => mul13_2);
+    mul13_3_inst : mul13 port map(x => x(3), y => mul13_3);
+
+    mul14_0_inst : mul14 port map(x => x(0), y => mul14_0);
+    mul14_1_inst : mul14 port map(x => x(1), y => mul14_1);
+    mul14_2_inst : mul14 port map(x => x(2), y => mul14_2);
+    mul14_3_inst : mul14 port map(x => x(3), y => mul14_3);
+
+
+
+    y(0) <= mul14_0 xor mul11_1 xor mul13_2 xor mul9_3;
+    y(1) <= mul9_0 xor mul14_1 xor mul11_2 xor mul13_3;
+    y(2) <= mul13_0 xor mul9_1 xor mul14_2 xor mul11_3;
+    y(3) <= mul11_0 xor mul13_1 xor mul9_2 xor mul14_3;
 end;
