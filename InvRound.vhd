@@ -6,15 +6,15 @@ use ieee.numeric_std.all;
 library xil_defaultlib;
 use xil_defaultlib.Common.all;
 
-entity Round is port(
+entity InvRound is port(
     in_state : in state;
     RoundKey : in state_byte;
     out_state : out state
 );
-end Round;
+end InvRound;
 
 
-architecture behavior of Round is
+architecture behavior of InvRound is
     signal state0 : state;
     signal state1 : state;
     signal state2 : state;

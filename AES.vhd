@@ -94,6 +94,8 @@ architecture behavior of AES is
     signal RoundKeys : RoundKeys; --RoundKeys are a constant for now, will add
                                 -- Input functionality later.
 
+    signal inputtext_state : state;
+    signal outputtext_state : state;
     
     signal outputtext_bytes : state_byte;
     
@@ -205,14 +207,10 @@ begin
 
     --state gets Ciphered/Deciphered at same time. EnotD chooses which one 
     -- is the proper output.
-    process(EnotD)
-    begin
-        if EnotD = '1' then
-            outputtext_state <= ciphertext_state;
-        else then
-            outputtext_state <= plaintext_state;
-        end if;
-    end process;
+    
+    --outputtext_state <= plaintext_state;
+    
+    outputtext_state <= ciphertext_state when (EnotD = '1') else plaintext_state;
 
 
 

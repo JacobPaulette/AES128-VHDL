@@ -53,22 +53,22 @@ architecture behavior of Decipher is
     signal state10 : state;
     signal state11 : state;
 begin
-    InitialAddRoundKey : AddRoundKey port map(in_state, RoundKeys(0), state0);
+    InitialAddRoundKey : AddRoundKey port map(in_state, RoundKeys(10), state0);
 
     --Now 9 intermediate rounds
-    Round0 : InvRound port map(state0, RoundKeys(1), state1);
-    Round1 : InvRound port map(state1, RoundKeys(2), state2);
-    Round2 : InvRound port map(state2, RoundKeys(3), state3);
-    Round3 : InvRound port map(state3, RoundKeys(4), state4);
+    Round0 : InvRound port map(state0, RoundKeys(9), state1);
+    Round1 : InvRound port map(state1, RoundKeys(8), state2);
+    Round2 : InvRound port map(state2, RoundKeys(7), state3);
+    Round3 : InvRound port map(state3, RoundKeys(6), state4);
     Round4 : InvRound port map(state4, RoundKeys(5), state5);
-    Round5 : InvRound port map(state5, RoundKeys(6), state6);
-    Round6 : InvRound port map(state6, RoundKeys(7), state7);
-    Round7 : InvRound port map(state7, RoundKeys(8), state8);
-    Round8 : InvRound port map(state8, RoundKeys(9), state9);
+    Round5 : InvRound port map(state5, RoundKeys(4), state6);
+    Round6 : InvRound port map(state6, RoundKeys(3), state7);
+    Round7 : InvRound port map(state7, RoundKeys(2), state8);
+    Round8 : InvRound port map(state8, RoundKeys(1), state9);
 
     --Final SubBytes, SHiftRows, and RoundKey
     InvShiftRows0 : InvShiftRows port map(state9, state10);
-    InvSubBytes0 : SubBytes port map(state10, state11);
-    FinalAddRoundKey : AddRoundKey port map(state11, RoundKeys(10), out_state);
+    InvSubBytes0 : InvSubBytes port map(state10, state11);
+    FinalAddRoundKey : AddRoundKey port map(state11, RoundKeys(0), out_state);
 end;
 

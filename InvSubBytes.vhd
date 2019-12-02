@@ -5,13 +5,13 @@ use ieee.std_logic_1164.all;
 library xil_defaultlib;
 use xil_defaultlib.Common.all;
 
-entity SubBytes is port(
+entity InvSubBytes is port(
     in_state : in state;
     out_state : out state
 );
-end SubBytes;
+end InvSubBytes;
 
-architecture behavior of SubBytes is
+architecture behavior of InvSubBytes is
     signal s0 : column;
     signal s1 : column;
     signal s2 : column;

@@ -5,13 +5,13 @@ use ieee.std_logic_1164.all;
 library xil_defaultlib;
 use xil_defaultlib.Common.all;
 
-entity MixColumn is port(
+entity InvMixColumn is port(
     x : in column;
 	y : out column
 );
-end MixColumn;
+end InvMixColumn;
 
-architecture behavior of MixColumn is
+architecture behavior of InvMixColumn is
     signal mul9_0 : std_logic_vector(7 downto 0);
     signal mul9_1 : std_logic_vector(7 downto 0);
     signal mul9_2 : std_logic_vector(7 downto 0);

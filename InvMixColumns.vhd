@@ -6,13 +6,13 @@ use ieee.numeric_std.all;
 library xil_defaultlib;
 use xil_defaultlib.Common.all;
 
-entity MixColumns is port(
+entity InvMixColumns is port(
     in_state : in state;
     out_state : out state
 );
-end MixColumns;
+end InvMixColumns;
 
-architecture behavior of MixColumns is
+architecture behavior of InvMixColumns is
     component InvMixColumn port(
         x : in column;
         y : out column);

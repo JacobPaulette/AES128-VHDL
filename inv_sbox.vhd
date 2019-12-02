@@ -3,17 +3,17 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 
-entity sbox is 
+entity inv_sbox is 
 port(
 	in_byte : in std_logic_vector(7 downto 0);
     out_byte : out std_logic_vector(7 downto 0)
 ); 
-end sbox;
+end inv_sbox;
 
-architecture sboxbehavior of sbox is
+architecture inv_sboxbehavior of inv_sbox is
     subtype BYTE is std_logic_vector(7 downto 0);
     type LUT is array (0 to 255) of BYTE;
-    constant sboxlut: LUT := (
+    constant inv_sboxlut: LUT := (
 "01010010","00001001","01101010","11010101","00110000","00110110","10100101","00111000",
 "10111111","01000000","10100011","10011110","10000001","11110011","11010111","11111011",
 "01111100","11100011","00111001","10000010","10011011","00101111","11111111","10000111",
@@ -48,6 +48,6 @@ architecture sboxbehavior of sbox is
 "11100001","01101001","00010100","01100011","01010101","00100001","00001100","01111101");
 
 begin
-	out_byte <= sboxlut(TO_INTEGER(unsigned(in_byte)));
+	out_byte <= inv_sboxlut(TO_INTEGER(unsigned(in_byte)));
 end;
 

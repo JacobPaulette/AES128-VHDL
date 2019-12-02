@@ -6,13 +6,13 @@ use ieee.numeric_std.all;
 library xil_defaultlib;
 use xil_defaultlib.Common.all;
 
-entity ShiftRows is port(
+entity InvShiftRows is port(
     in_state : in state;
     out_state : out state
 );
-end ShiftRows;
+end InvShiftRows;
 
-architecture behavior of ShiftRows is
+architecture behavior of InvShiftRows is
     signal s0 : column;
     signal s1 : column;
     signal s2 : column;
