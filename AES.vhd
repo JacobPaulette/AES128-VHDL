@@ -14,7 +14,8 @@ entity AES is port(
     clock : in std_logic;
     clear_L : in std_logic;
     enable : in std_logic;
-    EnotD : in std_logic --encipher not decipher
+    EnotD : in std_logic; --encipher not decipher
+    LRK : in std_logic -- load round keys.
 );
 end AES;
 
@@ -111,6 +112,13 @@ architecture behavior of AES is
     signal SO : std_logic := '0';
     signal SelectiveBus : std_logic := '0';
 
+    --WE for Round Key Registers.
+    signal RKR_WE : std_logic_vector(10 downto 0) := "00000000000";
+    signal RKR_BUS : RoundKeysBus;
+    --signal RKR_BUS
+
+    signal RK_count : unsigned(3 downto 0) := 0;
+
 
 
 begin
@@ -127,17 +135,33 @@ begin
 
 
     --set RoundKeys
-    BusToBytes0 : BusToBytes port map(x"5468617473206d79204b756e67204679", RoundKeys(0));
-    BusToBytes1 : BusToBytes port map(x"e232d7f19112ba88b159cfe6d679899f", RoundKeys(1));
-    BusToBytes2 : BusToBytes port map(x"56950c07c787b68f76de7969a0a7f0f6", RoundKeys(2));
-    BusToBytes3 : BusToBytes port map(x"0e194ee7c99ef868bf4081011fe771f7", RoundKeys(3));
-    BusToBytes4 : BusToBytes port map(x"92ba26275b24de4fe4645f4efb832eb9", RoundKeys(4));
-    BusToBytes5 : BusToBytes port map(x"6e8b702835afae67d1cbf1292a48df90", RoundKeys(5));
-    BusToBytes6 : BusToBytes port map(x"1c1510cd29babeaaf8714f83d2399013", RoundKeys(6));
-    BusToBytes7 : BusToBytes port map(x"4e756d7867cfd3d29fbe9c514d870c42", RoundKeys(7));
-    BusToBytes8 : BusToBytes port map(x"d98b419bbe44924921fa0e186c7d025a", RoundKeys(8));
-    BusToBytes9 : BusToBytes port map(x"3dfcffcb83b86d82a242639ace3f61c0", RoundKeys(9));
-    BusToBytes10 : BusToBytes port map(x"7e134540fdab28c25fe94b5891d62a98", RoundKeys(10));
+    --BusToBytes0 : BusToBytes port map(x"5468617473206d79204b756e67204679", RoundKeys(0));
+    --BusToBytes1 : BusToBytes port map(x"e232d7f19112ba88b159cfe6d679899f", RoundKeys(1));
+    --BusToBytes2 : BusToBytes port map(x"56950c07c787b68f76de7969a0a7f0f6", RoundKeys(2));
+    --BusToBytes3 : BusToBytes port map(x"0e194ee7c99ef868bf4081011fe771f7", RoundKeys(3));
+    --BusToBytes4 : BusToBytes port map(x"92ba26275b24de4fe4645f4efb832eb9", RoundKeys(4));
+    --BusToBytes5 : BusToBytes port map(x"6e8b702835afae67d1cbf1292a48df90", RoundKeys(5));
+    --BusToBytes6 : BusToBytes port map(x"1c1510cd29babeaaf8714f83d2399013", RoundKeys(6));
+    --BusToBytes7 : BusToBytes port map(x"4e756d7867cfd3d29fbe9c514d870c42", RoundKeys(7));
+    --BusToBytes8 : BusToBytes port map(x"d98b419bbe44924921fa0e186c7d025a", RoundKeys(8));
+    --BusToBytes9 : BusToBytes port map(x"3dfcffcb83b86d82a242639ace3f61c0", RoundKeys(9));
+    --BusToBytes10 : BusToBytes port map(x"7e134540fdab28c25fe94b5891d62a98", RoundKeys(10));
+
+
+
+    BusToBytes0 : BusToBytes port map(RKR_BUS(0),RoundKeys(0));
+    BusToBytes1 : BusToBytes port map(RKR_BUS(1), RoundKeys(1));
+    BusToBytes2 : BusToBytes port map(RKR_BUS(2), RoundKeys(2));
+    BusToBytes3 : BusToBytes port map(RKR_BUS(3), RoundKeys(3));
+    BusToBytes4 : BusToBytes port map(RKR_BUS(4), RoundKeys(4));
+    BusToBytes5 : BusToBytes port map(RKR_BUS(5), RoundKeys(5));
+    BusToBytes6 : BusToBytes port map(RKR_BUS(6), RoundKeys(6));
+    BusToBytes7 : BusToBytes port map(RKR_BUS(7), RoundKeys(7));
+    BusToBytes8 : BusToBytes port map(RKR_BUS(8), RoundKeys(8));
+    BusToBytes9 : BusToBytes port map(RKR_BUS(9), RoundKeys(9));
+    BusToBytes10 : BusToBytes port map(RKR_BUS(10), RoundKeys(10));
+
+
 
 
     inputreg : Selective16to128Register port map(
@@ -167,7 +191,142 @@ begin
             clock => not_clock,
             clear_L => clear_L);
 
+     RoundKeyReg00 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(0),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(0),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+     RoundKeyReg01 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(1),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(1),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+    
+     RoundKeyReg02 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(2),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(2),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+     RoundKeyReg03 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(3),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(3),
+            clock => not_clock,
+            clear_L => clear_L);
 
+     RoundKeyReg04 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(4),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(4),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+     RoundKeyReg05 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(5),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(5),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+    
+     RoundKeyReg06 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(6),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(6),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+     RoundKeyReg07 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(7),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(7),
+            clock => not_clock,
+            clear_L => clear_L);
+ 
+      RoundKeyReg08 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(8),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(8),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+     RoundKeyReg09 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(9),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(9),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+    
+     RoundKeyReg10 : Selective16to128Register port map(
+            SelectiveInput => filler(15 downto 0),
+            SelectiveOutput => filler(15 downto 0),
+            FullInput => InputRegBus,
+            FullOutput => RKR_BUS(10),
+            Sel => count,
+            SInotSO => SI, --Vivado yells if I don't have a default input, this doesn't matter.
+            FBnotS => FullBus,
+            WE => RKR_WE(10),
+            clock => not_clock,
+            clear_L => clear_L);
+    
+ 
     outputreg : Selective16to128Register port map(
         FullInput => outputtext,
         SelectiveInput => filler(15 downto 0),
@@ -192,15 +351,47 @@ begin
     REG_CTRL: process(clock, count, enable)
     begin
         if enable = '1' and rising_edge(clock) then
-            if count = "111" then
-                --Ready bufferreg and outputreg to do write on the next falling edge.
-                buffer_reg_WE <= '1';
-                output_reg_WE <= '1';
-            elsif count = "000" then
-                --Disable WE on bufferreg and outputreg before the next falling edge so 
-                --so block doesn't get corrupted.
-                buffer_reg_WE <= '0';
-                output_reg_WE <= '0';
+            if LRK = '0' then
+                if count = "111" then
+                    --Ready bufferreg and outputreg to do write on the next falling edge.
+                    buffer_reg_WE <= '1';
+                    output_reg_WE <= '1';
+                elsif count = "000" then
+                    --Disable WE on bufferreg and outputreg before the next falling edge so 
+                    --so block doesn't get corrupted.
+                    buffer_reg_WE <= '0';
+                    output_reg_WE <= '0';
+                end if;
+                RK_count <= 0;
+            else
+                if count = "111" then
+                    if RK_count = 0 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 1 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 2 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 3 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 4 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 5 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 6 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 7 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 8 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 9 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    elsif RK_count = 10 then
+                        RKR_WE <= (0 => '1', others => '0');
+                    end if;
+                elsif count = "000" then
+                    RKR_WE <= (others => '0');
+                    RK_count <= RK_count + 1;
+                end if;
             end if;
         end if;
     end process;
