@@ -116,8 +116,11 @@ architecture behavior of AES is
     signal RKR_WE : std_logic_vector(10 downto 0) := "00000000000";
     signal RKR_BUS : RoundKeysBus;
     --signal RKR_BUS
+    
+    --signal to make sure RK_count doesn't increment on first run.
+    signal RK_first : std_logic := '1';
 
-    signal RK_count : unsigned(3 downto 0) := 0;
+    signal RK_count : unsigned(3 downto 0) := to_unsigned(0, 4);
 
 
 
@@ -362,35 +365,40 @@ begin
                     buffer_reg_WE <= '0';
                     output_reg_WE <= '0';
                 end if;
-                RK_count <= 0;
+                RK_count <= to_unsigned(0, 4);
+                RKR_WE <= "00000000000";
             else
                 if count = "111" then
                     if RK_count = 0 then
                         RKR_WE <= (0 => '1', others => '0');
                     elsif RK_count = 1 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (1 => '1', others => '0');
                     elsif RK_count = 2 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (2 => '1', others => '0');
                     elsif RK_count = 3 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (3 => '1', others => '0');
                     elsif RK_count = 4 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (4 => '1', others => '0');
                     elsif RK_count = 5 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (5 => '1', others => '0');
                     elsif RK_count = 6 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (6 => '1', others => '0');
                     elsif RK_count = 7 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (7 => '1', others => '0');
                     elsif RK_count = 8 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (8 => '1', others => '0');
                     elsif RK_count = 9 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (9 => '1', others => '0');
                     elsif RK_count = 10 then
-                        RKR_WE <= (0 => '1', others => '0');
+                        RKR_WE <= (10 => '1', others => '0');
                     end if;
                 elsif count = "000" then
                     RKR_WE <= (others => '0');
-                    RK_count <= RK_count + 1;
+                    if RK_first = '0' then
+                        RK_count <= RK_count + 1;
+                    else
+                        RK_first <= '0';
+                    end if;
                 end if;
             end if;
         end if;
